@@ -74,8 +74,39 @@ $(document).ready(function() {
         clearInterval(interval);
         playing = true;
         reset();
-        interval = setInterval(function(){drawShape(currentShape,shift,currentRow)}, 500   );
+        interval = setInterval(function(){drawShape(currentShape,shift,currentRow)}, 100   );
 
+    }
+
+    function resetLine(){
+        
+
+        var lineId = 0;
+        var count = 0;
+        for (var j = 18; j > 0; j--){
+            for(var i = 0; i < 9; i++){
+                if ($("#status"+j+""+i).html() === "filled"){
+                    count++;
+                }
+            }
+            if (count === 9){
+                console.log("Reset Line called ------------");
+
+                lineId = j;
+                for (var p = lineId; p > 0; p--){
+                    for(var i = 0; i < 9; i++){
+                        $("#col"+p+""+i).css("background-color", $("#col"+(p-1)+""+i).css("background-color"));
+                        $("#status"+p+""+i).html($("#status"+(p-1)+""+i).html());
+                    }
+                }
+                for(var i = 0; i < 9; i++){
+                    $("#col"+0+""+i).css("background-color", "silver");
+                    $("#status"+0+""+i).html("empty");
+                }
+                clearInterval();
+            }
+            count = 0;
+        }
     }
 
     function reset(){
@@ -247,6 +278,7 @@ $(document).ready(function() {
         }
 
         else if(status === undefined && currentRow > 0 && playing){
+                resetLine();
                 reset();
         }
 
@@ -256,6 +288,7 @@ $(document).ready(function() {
 
                 console.log(currentRow);
                 if(currentRow > 0){
+                    resetLine();
                     reset();
                 }
                 else playing = false;
@@ -270,6 +303,7 @@ $(document).ready(function() {
 
             else if(attempt === 0 && shift === lastShift && currentRow > 0) {
                 console.log("reset");
+                resetLine();
                 reset(); 
             }
             else {
@@ -280,7 +314,10 @@ $(document).ready(function() {
         else{
             if (shift !== lastShift)
                 shift = lastShift;
-            else reset();
+            else {
+                resetLine();
+                reset();
+            }
             
         }
                
