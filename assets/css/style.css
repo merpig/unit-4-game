@@ -1,0 +1,18 @@
+h1{
+    width: max-content;
+    background: none;
+    margin: 5%;
+}
+
+.col{
+    
+    padding: 0px;
+    max-width: 25px;
+    min-height: 25px;
+    background-color: silver;
+    border: 1px solid steelblue;
+}
+
+p{
+    visibility: hidden;
+}
