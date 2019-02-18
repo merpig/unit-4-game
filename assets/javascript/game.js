@@ -163,6 +163,7 @@ $(document).ready(function() {
                         resetLine();
                         return;
                     }
+                    previousRotation = currentRotation;
                 }
             }
         }
