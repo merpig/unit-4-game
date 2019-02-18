@@ -181,8 +181,26 @@ $(document).ready(function() {
                     }*/
                 }
                 else if (currentRotation%2 === 1){
-                    currentCols[i] = "#col" + (row) + "" + (parseInt(startX) + _shift+i);
-                    currentStatus[i] = "#status" + (row) + "" + (parseInt(startX) + _shift+i);
+                    var check1 = "#status" + (row+1) + "" + (parseInt(startX) + shift - 1);
+                    var check2 = "#status" + (row+1) + "" + (parseInt(startX) + shift +1+3);
+                    if($(check1).html() !== "empty") {
+                        console.log("can't shift left");
+                        eventLeft = false;
+                        //return;
+                        
+                    }
+                    else if($(check2).html() !== "empty") {
+                        console.log("can't shift right");
+                        eventRight = false;
+                        //return;
+                    }
+                    else {
+                        console.log("can shift");
+                        eventLeft = true;
+                        eventRight = true;
+                    }
+                    currentCols[i] = "#col" + (row) + "" + (parseInt(startX) + shift+i);
+                    currentStatus[i] = "#status" + (row) + "" + (parseInt(startX) + shift+i);
                 
                     if($(currentStatus[i]).html()!=="empty"){
                         if (!rotationChecked) {
