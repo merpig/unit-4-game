@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    /*$.ajaxSetup ({
+        // Disable caching of AJAX responses
+        cache: false
+    });*/
     var grid = "";
 
     function init(){
@@ -103,10 +107,12 @@ $(document).ready(function() {
                     $("#col"+0+""+i).css("background-color", "silver");
                     $("#status"+0+""+i).html("empty");
                 }
-                clearInterval();
+                j = j + 1;
             }
+            //sleep(10);
             count = 0;
         }
+        //reset
     }
 
     function reset(){
@@ -175,6 +181,7 @@ $(document).ready(function() {
                             console.log($(currentStatus[j]).html());
                         }
                     }
+                    shiftEval = true;
                 }
                 if(currentShape === 1 ){
                     currentCols[0] = "#col" + (row) + "" + (parseInt(startX) + _shift);
@@ -195,6 +202,16 @@ $(document).ready(function() {
                             }
                         }
                     }
+                    if(!canShift){
+                        for (var i = 0; i < 4; i++){
+                            shift = lastShift;
+                            currentCols[i] = previousCols[i];
+                            currentStatus[i] = previousStatus[i];
+                            $(currentStatus[i]).html("filled");
+                            $(currentCols[i]).css("background-color", tempColor);
+                        }
+                    }
+                    shiftEval == true;
                 }
 
                 if(canShift){
@@ -308,6 +325,7 @@ $(document).ready(function() {
             }
             else {
                 playing = false;
+                console.log("game over");
                 clearInterval(interval);
             }
         }
@@ -329,7 +347,7 @@ $(document).ready(function() {
 
     $(".col").click(run);
 
-    $("html").keyup(function(event){
+    $("html").keydown(function(event){
         if (event.which === 37 && playing && shiftEval){
             if(shift + 4> 0){
                 lastShift = shift;
