@@ -59,6 +59,8 @@ $(document).ready(function() {
     var currentRow = 0;
     var shift = 0;
     var lastShift = 0;
+
+    var previousRotation = 0;
     var currentRotation = 0;
     var currentShape = 0;
 
@@ -68,6 +70,7 @@ $(document).ready(function() {
     var currentCols = [];
     var currentStatus = [];
 
+    var rotationChecked = true;
     var playing = false;
     var shiftEval = true;
     var previous = false;
@@ -78,7 +81,7 @@ $(document).ready(function() {
         clearInterval(interval);
         playing = true;
         reset();
-        interval = setInterval(function(){drawShape(currentShape,shift,currentRow)}, 100   );
+        
 
     }
 
@@ -116,16 +119,23 @@ $(document).ready(function() {
     }
 
     function reset(){
+        clearInterval(interval);
+        previousRotation = 0;
+        currentRotation = 0;
         currentRow = 0;
         shift = 0;
         lastShift = 0;
         previous = false;
+        rotationChecked = true;
         squareStatus = "empty";
         attempt = 0;
         previousCols = [];
         currentCols = [];
+        currentStatus = [];
+        previousStatus = [];
         shiftEval = true;
         currentShape = Math.floor((Math.random() * 7));
+        interval = setInterval(function(){drawShape(currentShape,shift,currentRow)}, 100   );
     }
 
     function drawShape(int, _shift, row){
@@ -135,11 +145,46 @@ $(document).ready(function() {
 
         if (currentShape === 0){
             for(var i = 0; i < 4; i++){
-                currentCols[i] = "#col" + (row-i) + "" + (parseInt(startX) + _shift);
-                currentStatus[i] = "#status" + (row-i) + "" + (parseInt(startX) + _shift);
+                if (currentRotation%2 === 0){
+                    currentCols[i] = "#col" + (row-i) + "" + (parseInt(startX) + _shift);
+                    currentStatus[i] = "#status" + (row-i) + "" + (parseInt(startX) + _shift);
+                }
+                else if (currentRotation%2 === 1){
+                    currentCols[i] = "#col" + (row) + "" + (parseInt(startX) + _shift+i);
+                    currentStatus[i] = "#status" + (row) + "" + (parseInt(startX) + _shift+i);
+                
+                    if($(currentStatus[i]).html()!=="empty"){
+                        if (!rotationChecked) {
+                            currentRotation = previousRotation;
+                            rotationChecked = true;
+                            return;
+                        }
+                        reset();
+                        resetLine();
+                        return;
+                    }
+                }
             }
         }
         if (currentShape === 1){
+                if(0<currentRow < 17){
+                    var checkStatus = "#status" + (row) + "" + (parseInt(startX)+ lastShift);
+                    var checkStatus2 = "#status" + (row) + "" + ((parseInt(startX) + lastShift + 1));
+
+                    //var checkCol = "#col" + (row) + "" + (parseInt(startX)+ lastShift);
+                    //var checkCol2 = "#col" + (row) + "" + ((parseInt(startX) + lastShift + 1));
+                    //$(checkCol).css("background-color","purple");
+                    //$(checkCol2).css("background-color","purple");
+                    //console.log("hi" + $(checkStatus).html());
+
+                    if($(checkStatus).html() === "filled" || $(checkStatus2).html() === "filled") {
+                        //console.log($(checkCol).css() + " |------| " + $(checkCol2).css());
+                        reset();
+                        resetLine();
+                        return;
+                    }
+                }
+
                 currentCols[0] = "#col" + (row) + "" + (parseInt(startX) + _shift);
                 currentStatus[0] = "#status" + (row) + "" + (parseInt(startX) + _shift);
 
@@ -156,10 +201,10 @@ $(document).ready(function() {
         status = $(currentStatus[0]).html();
         if (currentShape === 1)
             squareStatus = $(currentStatus[2]).html();
-        console.log(status);
+        //console.log("should not show after reset");
 
         if (status==="empty" && playing && squareStatus === "empty"){
-            console.log("is empty");
+            //console.log("is empty");
 
             if(previous) {
                 for(var i = 0; i < 4; i++){
@@ -172,18 +217,30 @@ $(document).ready(function() {
             if(!shiftEval){
 
                 if(currentShape === 0){
+                    
                     for(var i = 0; i < 4; i++){
-                        currentCols[i] = "#col" + (row-i) + "" + (parseInt(startX) + _shift);
-                        currentStatus[i] = "#status" + (row-i) + "" + (parseInt(startX) + _shift);
+                        if (currentRotation%2 === 0){
+                            currentCols[i] = "#col" + (row-i) + "" + (parseInt(startX) + _shift);
+                            currentStatus[i] = "#status" + (row-i) + "" + (parseInt(startX) + _shift);
+                        }
+                        else if (currentRotation%2 === 1){
+                            currentCols[i] = "#col" + (row) + "" + (parseInt(startX) + _shift+i);
+                            currentStatus[i] = "#status" + (row) + "" + (parseInt(startX) + _shift+i);
+                        }
                     
                         for(var j = 0; j < i; j++){
                             if($(currentStatus[j]).html()==="filled") canShift = false;
-                            console.log($(currentStatus[j]).html());
+                            //console.log($(currentStatus[j]).html());
                         }
                     }
+
+
+
+
                     shiftEval = true;
                 }
                 if(currentShape === 1 ){
+
                     currentCols[0] = "#col" + (row) + "" + (parseInt(startX) + _shift);
                     currentStatus[0] = "#status" + (row) + "" + (parseInt(startX) + _shift);
                     currentCols[1] = "#col" + (row-1) + "" + (parseInt(startX) + _shift);
@@ -227,8 +284,15 @@ $(document).ready(function() {
 
                     if (currentShape === 0){
                         for(var i = 0; i < 4; i++){
-                            previousCols[i] = "#col" + (row-i) + "" + (parseInt(shapes.startX) + _shift);
-                            previousStatus[i] = "#status" + (row-i) + "" + (parseInt(shapes.startX) + _shift);
+
+                            if (currentRotation%2 === 0){
+                                previousCols[i] = "#col" + (row-i) + "" + (parseInt(shapes.startX) + _shift);
+                                previousStatus[i] = "#status" + (row-i) + "" + (parseInt(shapes.startX) + _shift);
+                            }
+                            else if (currentRotation%2 === 1){
+                                previousCols[i] = "#col" + (row) + "" + (parseInt(shapes.startX) + _shift+i);
+                                previousStatus[i] = "#status" + (row) + "" + (parseInt(shapes.startX) + _shift+i);
+                            }
                         }
                     }
                     if (currentShape === 1){
@@ -258,7 +322,7 @@ $(document).ready(function() {
                 attempt=0;
                 lastShift = shift;
                 currentRow++;
-                console.log("can shift");
+                //console.log("can shift");
 
                 for (var i = 0; i < 4; i++){
                     $(currentStatus[i]).html("filled");
@@ -267,8 +331,14 @@ $(document).ready(function() {
 
                 if(currentShape === 0){
                     for(var i = 0; i < 4; i++){
-                        previousCols[i] = "#col" + (row-i) + "" + (parseInt(shapes.startX) + _shift);
-                        previousStatus[i] = "#status" + (row-i) + "" + (parseInt(shapes.startX) + _shift);
+                        if (currentRotation%2 === 0){
+                            previousCols[i] = "#col" + (row-i) + "" + (parseInt(shapes.startX) + _shift);
+                            previousStatus[i] = "#status" + (row-i) + "" + (parseInt(shapes.startX) + _shift);
+                        }
+                        else if (currentRotation%2 === 1){
+                            previousCols[i] = "#col" + (row) + "" + (parseInt(shapes.startX) + _shift+i);
+                            previousStatus[i] = "#status" + (row) + "" + (parseInt(shapes.startX) + _shift+i);
+                        }
                     }
                 }
                 if(currentShape===1){
@@ -313,13 +383,13 @@ $(document).ready(function() {
 
             else if(attempt === 0 && shift !== lastShift){
                 shiftEval = true; 
-                console.log("Collision 1 Detected: side block");
+                //console.log("Collision 1 Detected: side block");
                 shift = lastShift;
                 //attempt++;
             }
 
             else if(attempt === 0 && shift === lastShift && currentRow > 0) {
-                console.log("reset");
+                //console.log("reset");
                 resetLine();
                 reset(); 
             }
@@ -354,20 +424,36 @@ $(document).ready(function() {
                 shift--;
                 shiftEval = false;
             }
-            else
-            console.log("ignoring you");
+            else{}
+            //console.log("ignoring you");
         }
 
         if (event.which === 39 && playing && shiftEval){
-            if(shift + 4 + shapes.rotation[0][currentShape]< 8){
-                console.log(shapes.rotation[0][currentShape]);
+            if(shift + 4 + shapes.rotation[currentRotation][currentShape]< 8){
+                //console.log(shapes.rotation[currentRotation][currentShape]);
                 lastShift = shift;
                 shift++;
                 shiftEval = false;
             }
-            else
-            console.log("ignoring you");
+            else{}
+            //console.log("ignoring you");
             
         }
     });
+
+    $("html").keyup(function(event){
+        if ((event.which === 114 || event.which === 82)&&rotationChecked){
+            rotationChecked = false;
+            console.log("PRESSED R");
+            previousRotation = currentRotation;
+            if(currentRotation < 2) {
+                currentRotation++;
+            }
+            else {
+                currentRotation = 0;
+            }
+        }
+    });
+
+
 })
