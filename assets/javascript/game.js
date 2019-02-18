@@ -163,9 +163,11 @@ $(document).ready(function() {
                         resetLine();
                         return;
                     }
-                    previousRotation = currentRotation;
+                    
+                    //previousRotation = currentRotation;
                 }
             }
+            rotationChecked = true;
         }
         if (currentShape === 1){
                 if(0<currentRow < 17){
