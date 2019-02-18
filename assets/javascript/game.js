@@ -74,6 +74,8 @@ $(document).ready(function() {
     var playing = false;
     var shiftEval = true;
     var previous = false;
+    var eventLeft = true;
+    var eventRight = true;
     var squareStatus = "empty";
     var attempt = 0;
 
@@ -120,6 +122,8 @@ $(document).ready(function() {
 
     function reset(){
         clearInterval(interval);
+        eventLeft = true;
+        eventRight = true;
         previousRotation = 0;
         currentRotation = 0;
         currentRow = 0;
@@ -134,8 +138,8 @@ $(document).ready(function() {
         currentStatus = [];
         previousStatus = [];
         shiftEval = true;
-        currentShape = Math.floor((Math.random() * 7));
-        interval = setInterval(function(){drawShape(currentShape,shift,currentRow)}, 100   );
+        currentShape = Math.floor((Math.random() * 2));
+        interval = setInterval(function(){drawShape(currentShape,shift,currentRow)}, 200   );
     }
 
     function drawShape(int, _shift, row){
@@ -144,10 +148,37 @@ $(document).ready(function() {
         var status;
 
         if (currentShape === 0){
+            eventLeft = eventRight = true;
             for(var i = 0; i < 4; i++){
                 if (currentRotation%2 === 0){
+                    
+                    var check1 = "#status" + (row-i+1) + "" + (parseInt(startX) + lastShift - 1);
+                    var check2 = "#status" + (row-i+1) + "" + (parseInt(startX) + lastShift + 1);
+
+                    if($(check1).html() !== "empty") {
+                        console.log("can't shift left");
+                        eventLeft = false;
+                        
+                    }
+                    else if($(check2).html() !== "empty") {
+                        console.log("can't shift right");
+                        eventRight = false;
+                    }
+                    else {
+                        console.log("can shift");
+                        //eventLeft = true;
+                        //eventRight = true;
+                    }
+
+
                     currentCols[i] = "#col" + (row-i) + "" + (parseInt(startX) + _shift);
                     currentStatus[i] = "#status" + (row-i) + "" + (parseInt(startX) + _shift);
+                    /*if($("#status" + (row-3) + "" + (parseInt(startX) + _shift+1)).html()==="filled"){
+                        if (shift!==lastShift) {
+                            shift--;
+                            return;
+                        }
+                    }*/
                 }
                 else if (currentRotation%2 === 1){
                     currentCols[i] = "#col" + (row) + "" + (parseInt(startX) + _shift+i);
@@ -159,6 +190,7 @@ $(document).ready(function() {
                             rotationChecked = true;
                             return;
                         }
+                        
                         reset();
                         resetLine();
                         return;
@@ -171,6 +203,8 @@ $(document).ready(function() {
         }
         if (currentShape === 1){
                 if(0<currentRow < 17){
+                    var checkStatus1 = "#status" + (row+1) + "" + (parseInt(startX)+ lastShift - 1);
+                    var checkStatus3 = "#status" + (row+1) + "" + ((parseInt(startX) + lastShift + 2));
                     var checkStatus = "#status" + (row) + "" + (parseInt(startX)+ lastShift);
                     var checkStatus2 = "#status" + (row) + "" + ((parseInt(startX) + lastShift + 1));
 
@@ -179,6 +213,21 @@ $(document).ready(function() {
                     //$(checkCol).css("background-color","purple");
                     //$(checkCol2).css("background-color","purple");
                     //console.log("hi" + $(checkStatus).html());
+
+                    if($(checkStatus1).html() !== "empty") {
+                        console.log("can't shift left");
+                        eventLeft = false;
+                        
+                    }
+                    else if($(checkStatus3).html() !== "empty") {
+                        console.log("can't shift right");
+                        eventRight = false;
+                    }
+                    else {
+                        console.log("can shift");
+                        eventLeft = true;
+                        eventRight = true;
+                    }
 
                     if($(checkStatus).html() === "filled" || $(checkStatus2).html() === "filled") {
                         //console.log($(checkCol).css() + " |------| " + $(checkCol2).css());
@@ -357,7 +406,35 @@ $(document).ready(function() {
                     previousCols[3] = "#col" + (row-1) + "" + (parseInt(startX) + _shift + 1);
                     previousStatus[3] = "#status" + (row-1) + "" + (parseInt(startX) + _shift + 1);
                 }
+/* L shape to be added
+                if(currentShape===2){
+                    previousCols[0] = "#col" + (row-2) + "" + (parseInt(startX) + _shift);
+                    previousStatus[0] = "#status" + (row-2) + "" + (parseInt(startX) + _shift);
     
+                    previousCols[1] = "#col" + (row-1) + "" + (parseInt(startX) + _shift);
+                    previousStatus[1] = "#status" + (row-1) + "" + (parseInt(startX) + _shift);
+    
+                    previousCols[2] = "#col" + (row) + "" + (parseInt(startX) + _shift);
+                    previousStatus[2] = "#status" + (row) + "" + (parseInt(startX) + _shift);
+    
+                    previousCols[3] = "#col" + (row) + "" + (parseInt(startX) + _shift + 1);
+                    previousStatus[3] = "#status" + (row) + "" + (parseInt(startX) + _shift + 1);
+                }
+
+                if(currentShape===3){
+                    previousCols[0] = "#col" + (row-2) + "" + (parseInt(startX) + _shift);
+                    previousStatus[0] = "#status" + (row-2) + "" + (parseInt(startX) + _shift);
+    
+                    previousCols[1] = "#col" + (row-1) + "" + (parseInt(startX) + _shift);
+                    previousStatus[1] = "#status" + (row-1) + "" + (parseInt(startX) + _shift);
+    
+                    previousCols[2] = "#col" + (row) + "" + (parseInt(startX) + _shift);
+                    previousStatus[2] = "#status" + (row) + "" + (parseInt(startX) + _shift);
+    
+                    previousCols[3] = "#col" + (row) + "" + (parseInt(startX) + _shift - 1);
+                    previousStatus[3] = "#status" + (row) + "" + (parseInt(startX) + _shift - 1);
+                }
+ */   
                 previous = true;
             }
 
@@ -421,7 +498,7 @@ $(document).ready(function() {
     $(".col").click(run);
 
     $("html").keydown(function(event){
-        if (event.which === 37 && playing && shiftEval){
+        if (event.which === 37 && playing && shiftEval && eventLeft){
             if(shift + 4> 0){
                 lastShift = shift;
                 shift--;
@@ -431,7 +508,7 @@ $(document).ready(function() {
             //console.log("ignoring you");
         }
 
-        if (event.which === 39 && playing && shiftEval){
+        if (event.which === 39 && playing && shiftEval && eventRight){
             if(shift + 4 + shapes.rotation[currentRotation][currentShape]< 8){
                 //console.log(shapes.rotation[currentRotation][currentShape]);
                 lastShift = shift;
