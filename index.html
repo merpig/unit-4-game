@@ -18,8 +18,60 @@
 </head>
 <body>
 
-    <h1 class="text-right" style="font-size: 2em;">Tetris</h1>
+    
     <div class="container">
+      <div class="row" id="row1">
+          <h1 class="text-right" style="font-size: 2em;">Crystal Collector</h1>
+      </div>
+
+      <div class="row" id="row2">
+        <p>You will be given a random number at the start of the game.</p>
+        <p>There are four crystals below. By Clicking on a crystal you will add a specific amount of points to your total score.</p>
+        <p>You win the game by matching your total score to random number, you lose the game if your total score goes above the random number.</p>
+        <p>The value of each crystal is hidden from you until you click on it.</p>
+        <p>Each time when the game starts the game will change the value of each crystal.</p>
+
+      </div>
+
+      <div class="row" id="row3">
+        <div class = "col-8" id="randNumContainer">
+            <p id="randNum">0</p>
+        </div>
+        <div class = "col" id="scoreContainer">
+            <div class = "row" id = "wins">
+              <p>Wins: </p>
+            </div>
+            <div class = "row" id = "losses">
+              <p>Losses: </p>
+            </div>
+        </div>
+      </div>
+
+      <div class="row" id="row4">
+
+        <div class="col-3" id="gem0">
+          
+        </div>
+        <div class="col-3" id="gem1">
+         
+        </div>
+        <div class="col-3" id="gem2">
+          
+        </div>
+        <div class="col-3" id="gem3">
+          
+        </div>
+
+      </div>
+
+      <div class="row" id="row5">
+        <p> Your total score is </p>
+
+      </div>
+
+      <div class="row" id="row6">
+        <p id="totalScore">0</p>
+      </div>
         
     </div>
 
