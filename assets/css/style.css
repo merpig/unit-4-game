@@ -1,5 +1,8 @@
 
 .container{
+    background-image: url("../images/bg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
     position: absolute;
     top: 0;
     left: 0; 
@@ -38,7 +41,7 @@
 
 #row3{
     height: 15%;
-    width: 30%
+    width: 100%
     
 }
 
@@ -94,18 +97,23 @@
 
 #gem0{
     background-image: url("../images/red.jpg");
+    mix-blend-mode: multiply;
     background-size: 100% 100%;
 }
 #gem1{
     background-image: url("../images/blue.jpg");
+    mix-blend-mode: multiply;
     background-size: 100% 100%;
 }
 #gem2{
     background-image: url("../images/yellow.jpg");
+    mix-blend-mode: multiply;
     background-size: 100% 100%;
+    
 }
 #gem3{
     background-image: url("../images/green.jpg");
+    mix-blend-mode: multiply;
     background-size: 100% 100%;
 }
 
